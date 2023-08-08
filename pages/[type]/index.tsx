@@ -43,7 +43,8 @@ export const getStaticProps: GetStaticProps<TypeProps> = async ({ params }: GetS
 	return {
 		props: {
 			menu,
-			firstCategory: firstCategoryItem.id
+			firstCategory: firstCategoryItem.id,
+			key: firstCategoryItem.id
 		}
 	};
 };
