@@ -10,7 +10,7 @@ import { API } from '../../helpers/api';
 function Type({ firstCategory }: TypeProps): JSX.Element {
 	return (
 		<>
-			{firstCategory}
+			{menu.map(m => <div key={m._id.secondCategory}>{m._id.secondCategory}</div>)}
 		</>
 	);
 }
