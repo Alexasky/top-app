@@ -7,7 +7,7 @@ import { firstLevelMenu } from '../../helpers/helpers';
 import { ParsedUrlQuery } from 'querystring';
 import { API } from '../../helpers/api';
 
-function Type({ firstCategory }: TypeProps): JSX.Element {
+function Type({ menu }: TypeProps): JSX.Element {
 	return (
 		<>
 			{menu.map(m => <div key={m._id.secondCategory}>{m._id.secondCategory}</div>)}
