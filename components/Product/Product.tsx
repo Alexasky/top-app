@@ -5,16 +5,17 @@ import { Card } from '../Card/Card';
 import { Rating } from '../Rating/Rating';
 import { Tag } from '../Tag/Tag';
 import { Button } from '../Button/Button';
-import { declOfNum, priceRu } from '../../helpers/helpers';
+import { declOfNum, extractValidHttpLink, priceRu } from '../../helpers/helpers';
 import { Divider } from '../Divider/Divider';
 import Image from 'next/image';
-import { ForwardedRef, forwardRef, useRef, useState } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { Review } from '../Review/Review';
 import { ReviewForm } from '../ReviewForm/ReviewForm';
 import { motion } from 'framer-motion';
+import React from 'react';
 
 // eslint-disable-next-line react/display-name
-export const Product = motion(forwardRef(({ product, className, ...props }: ProductProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
+export const Product = motion(React.memo(forwardRef(({ product, className, ...props }: ProductProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
 	const variants = {
 		visible: {
 			opacity: 1,
@@ -27,20 +28,49 @@ export const Product = motion(forwardRef(({ product, className, ...props }: Prod
 	};
 	const [isReviewOpened, setIsReviewOpened] = useState<boolean>(false);
 	const reviewRef = useRef<HTMLDivElement>(null);
-	const scrollToReview = () => {
+	const scrollToReview = useCallback(() => {
 		setIsReviewOpened(true);
 		reviewRef.current?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'start'
 		});
 		reviewRef.current?.focus();
-	};
+	},[]);
+
+	const toggleReviews = useCallback(() => setIsReviewOpened(prev => !prev), []);
+
+	const categories = useMemo(
+		() => product.categories.map(c => <Tag className={styles.category} key={c} color='ghost'>{c}</Tag>),
+		[product.categories]
+	);
+
+	const characteristics = useMemo(
+		() => product.characteristics.map(c => (
+			<div className={styles.characteristics} key={c.name}>
+				<span className={styles.characteristicsName}>{c.name}</span>
+				<span className={styles.characteristicsDots}></span>
+				<span className={styles.characteristicsValue}>{c.value}</span>
+			</div>
+		)),
+		[product.characteristics]
+	);
+
+	const reviews = useMemo(
+		() => product.reviews.map(r => (
+			<div key={r._id}>
+				<Review review={r} />
+				<Divider />
+			</div>
+		)),
+		[product.reviews]
+	);
+
 	return (
 		<div className={className} {...props} ref={ref}>
 			<Card className={styles.product} >
 				<div className={styles.logo}>
 					<img
-						src={process.env.NEXT_PUBLIC_DOMAIN + product.image}
+						src={extractValidHttpLink(product.image)}
 						alt={product.title}
 						width={70}
 						height={70}
@@ -64,21 +94,13 @@ export const Product = motion(forwardRef(({ product, className, ...props }: Prod
 					<span className='visualyHidden'>{'Рейтинг' + (product.reviewAvg ?? product.initialRating)}</span>
 					<Rating rating={product.reviewAvg ?? product.initialRating} />
 				</div>
-				<div className={styles.tags}>{product.categories.map(c => <Tag className={styles.category} key={c} color='ghost'>{c}</Tag>)}</div>
+				<div className={styles.tags}>{categories}</div>
 				<div className={styles.priceTitle} aria-hidden='true'>цена</div>
 				<div className={styles.creditTitle} aria-hidden='true'>кредит</div>
 				<div className={styles.rateTitle}><a href='#ref' onClick={scrollToReview}>{product.reviewCount} {declOfNum(product.reviewCount, ['отзыв', 'отзыва', 'отзывов'])}</a></div>
 				<Divider className={styles.hr} />
 				<div className={styles.description}>{product.description}</div>
-				<div className={styles.feature}>
-					{product.characteristics.map(c => (
-						<div className={styles.characteristics} key={c.name}>
-							<span className={styles.characteristicsName}>{c.name}</span>
-							<span className={styles.characteristicsDots}></span>
-							<span className={styles.characteristicsValue}>{c.value}</span>
-						</div>
-					))}
-				</div>
+				<div className={styles.feature}>{characteristics}</div>
 				<div className={styles.advBlock}>
 					{product.advantages && <div className={styles.advantages}>
 						<div className={styles.advTitle}>Преимущества</div>
@@ -96,22 +118,17 @@ export const Product = motion(forwardRef(({ product, className, ...props }: Prod
 						className={styles.reviewButton}
 						appearance='ghost'
 						arrow={isReviewOpened ? 'down' : 'right'}
-						onClick={() => setIsReviewOpened(!isReviewOpened)}
+						onClick={toggleReviews}
 						aria-expanded={isReviewOpened ? true : false}
 					>Читать отзывы</Button>
 				</div>
 			</Card>
 			<motion.div className={styles.reviewsWrapper} animate={isReviewOpened ? 'visible' : 'hidden'} variants={variants} initial='hidden'>
 				<Card color='blue' className={styles.reviews} ref={reviewRef} tabIndex={isReviewOpened ? 0 : -1}>
-					{product.reviews.map(r => (
-						<div key={r._id}>
-							<Review review={r} />
-							<Divider />
-						</div>
-					))}
+					{reviews}
 					<ReviewForm productId={product._id} isOpened={isReviewOpened} />
 				</Card>
 			</motion.div>
 		</div>
 	);
-}));
+})));

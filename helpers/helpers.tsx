@@ -18,3 +18,12 @@ export const declOfNum = (number: number, titles: [string, string, string]): str
 	const cases = [2, 0, 1, 1, 1, 2];
 	return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 };
+
+export const extractValidHttpLink = (url: string): string | undefined=> {
+	if (url) {
+		const splitUrl = url.split('http');
+		const validUrl = splitUrl[splitUrl.length-1];
+    return 'http' + validUrl;
+	}
+  return undefined;
+};

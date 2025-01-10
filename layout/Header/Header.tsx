@@ -7,6 +7,7 @@ import { Sidebar } from '../Sidebar/Sidebar';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 
 export const Header = ({ className, ...props }: HeaderProps): JSX.Element => {
@@ -29,7 +30,7 @@ export const Header = ({ className, ...props }: HeaderProps): JSX.Element => {
 
 	return (
 		<header className={cn(className, styles.header)}  {...props}>
-			<Logo />
+			<Link href="/" passHref><Logo /></Link>
 			<ButtonIcon icon={'menu'} appearance={'white'} onClick={() => setIsOpened(true)} />
 			<motion.div className={styles.menuMobile} variants={variants} animate={isOpened ? 'opened' : 'closed'}>
 				<Sidebar />

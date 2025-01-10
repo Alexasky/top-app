@@ -6,11 +6,20 @@ import { MenuItem } from '../../interfaces/menu.interface';
 import { firstLevelMenu } from '../../helpers/helpers';
 import { ParsedUrlQuery } from 'querystring';
 import { API } from '../../helpers/api';
+import Link from 'next/link';
+import { Htag, Tag } from '../../components';
 
-function Type({ menu }: TypeProps): JSX.Element {
+function Type({ menu, firstCategory }: TypeProps): JSX.Element {
 	return (
 		<>
-			{menu.map(m => <div key={m._id.secondCategory}>{m._id.secondCategory}</div>)}
+			{menu.map(m => 
+				<div key={m._id.secondCategory}>
+					<Htag tag={'h2'}>{m._id.secondCategory}</Htag>
+					{m.pages.map(p => 
+						<Tag key={p._id} color='primary' size='middle'><Link href={`/${firstLevelMenu[firstCategory].route}/${p.alias}`} className='categoryLink'>{p.title}</Link></Tag>
+					)}
+				</div>
+			)}
 		</>
 	);
 }
@@ -20,7 +29,7 @@ export default withLayout(Type);
 export const getStaticPaths: GetStaticPaths = async () => {
 	return {
 		paths: firstLevelMenu.map(m => '/' + m.route),
-		fallback: false
+		fallback: true
 	};
 };
 
@@ -45,7 +54,8 @@ export const getStaticProps: GetStaticProps<TypeProps> = async ({ params }: GetS
 			menu,
 			firstCategory: firstCategoryItem.id,
 			key: firstCategoryItem.id
-		}
+		},
+		revalidate: 60,
 	};
 };
 

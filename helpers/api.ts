@@ -8,5 +8,8 @@ export const API = {
 	},
 	review: {
 		createDemo: process.env.NEXT_PUBLIC_DOMAIN + '/api/review/create-demo'
+	},
+	search: {
+		textSearch: process.env.NEXT_PUBLIC_DOMAIN + '/api/top-page/textSearch/'
 	}
 };

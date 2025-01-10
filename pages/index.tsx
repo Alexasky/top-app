@@ -36,7 +36,8 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 			menu,
 			firstCategory,
 			products
-		}
+		},
+		revalidate: 10,
 	};
 };
 

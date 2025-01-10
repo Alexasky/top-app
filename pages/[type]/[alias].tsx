@@ -31,7 +31,6 @@ function TopPage({ firstCategory, page, products }: TopPageProps): JSX.Element {
 				page={page}
 				products={products}
 			/>
-
 		</>
 	);
 }
@@ -85,7 +84,8 @@ export const getStaticProps: GetStaticProps<TopPageProps> = async ({ params }: G
 				firstCategory: firstCategoryItem.id,
 				page,
 				products
-			}
+			},
+			revalidate: 10,
 		};
 	} catch {
 		return {

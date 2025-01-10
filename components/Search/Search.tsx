@@ -10,7 +10,8 @@ import { useRouter } from 'next/router';
 export const Search = ({ className, ...props }: SearchProps): JSX.Element => {
 	const [search, setSearch] = useState<string>('');
 	const router = useRouter();
-	const goToSearch = () => {
+	const goToSearch = (e?: React.FormEvent) => {
+		if (e) e.preventDefault();
 		router.push({
 			pathname: '/search',
 			query: {
@@ -24,7 +25,7 @@ export const Search = ({ className, ...props }: SearchProps): JSX.Element => {
 		}
 	};
 	return (
-		<form className={cn(className, styles.search)} {...props} role="search">
+		<form className={cn(className, styles.search)} {...props} role="search" >
 			<Input
 				className={cn(className, styles.input)}
 				placeholder="Поиск..."

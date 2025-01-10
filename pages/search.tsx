@@ -1,34 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withLayout } from '../layout/Layout';
-import { MenuItem } from '../interfaces/menu.interface';
+import { useRouter } from 'next/router';
 import axios from 'axios';
-import { GetStaticProps } from 'next';
+import { API } from '../helpers/api';
+import { TopPageModel } from '../interfaces/page.interface';
+import { SearchPageComponent } from '../page-components/SearchComponent/SearchPageComponent';
+
+
 
 function Search(): JSX.Element {
+	const router = useRouter();
+  const { q } = router.query;
+  const [searchResults, setSearchResults] = useState<TopPageModel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (q) {					
+      const fetchSearchResult = async () => {
+				if (!q || typeof q !== "string") {
+					setLoading(false);
+					return;
+				}
+        setLoading(true);
+        try {
+					const { data: searchResponse } = await axios.get<TopPageModel[]>(`${API.search.textSearch}${encodeURIComponent(q)}`);
+					searchResponse.map(({_id, firstCategory, alias, title, metaDescription}) => ({
+						_id,
+						firstCategory,
+						alias,
+						title,
+						metaDescription
+					}));
+          setSearchResults(searchResponse || []);
+        } catch (error: any) {
+          console.error("Error fetching search results:", error.message);
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchSearchResult();
+    }
+  }, [q]);
 	return (
-		<>
-			search
-		</>
-	);
+    <SearchPageComponent searchResults={searchResults} loading={loading} q={q} />
+  );
 }
 
 export default withLayout(Search);
-
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-	const firstCategory = 0;
-	const { data: menu } = await axios.post<MenuItem[]>(process.env.NEXT_PUBLIC_DOMAIN + '/api/top-page/find', {
-		firstCategory
-	});
-
-	return {
-		props: {
-			menu,
-			firstCategory
-		}
-	};
-};
-
-interface HomeProps extends Record<string, unknown> {
-	menu: MenuItem[];
-	firstCategory: number;
-}
