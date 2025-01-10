@@ -12,11 +12,16 @@ import { Htag, Tag } from '../../components';
 function Type({ menu, firstCategory }: TypeProps): JSX.Element {
 	return (
 		<>
-			{menu.map(m => 
+			{menu && menu.map(m => 
 				<div key={m._id.secondCategory}>
 					<Htag tag={'h2'}>{m._id.secondCategory}</Htag>
-					{m.pages.map(p => 
-						<Tag key={p._id} color='primary' size='middle'><Link href={`/${firstLevelMenu[firstCategory].route}/${p.alias}`} className='categoryLink'>{p.title}</Link></Tag>
+					{m.pages && m.pages.map(p => 
+						<Tag key={p._id} color='primary' size='middle'>
+							{ firstLevelMenu[firstCategory] ?
+								(<Link href={`/${firstLevelMenu[firstCategory].route}/${p.alias}`} className='categoryLink'>{p.title}</Link>) :
+								<span>{p.title}</span>
+							}						
+						</Tag>
 					)}
 				</div>
 			)}
