@@ -15,14 +15,17 @@
 }
 
 .sort {
-	display: inline-block;
-	display: grid;
-	grid-template-columns: auto auto;
-	gap: 40px;
+	display: inline-block;	
 }
 
 .sortName {
 	display: none;
+}
+
+.sortOptions {
+	display: grid;
+	grid-template-columns: auto auto;
+	gap: 40px;
 }
 
 .sort span {

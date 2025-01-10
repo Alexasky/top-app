@@ -90,8 +90,12 @@ export const Product = motion(React.memo(forwardRef(({ product, className, ...pr
 					<span className='visualyHidden'>Кредит</span>
 					{priceRu(product.credit)}/ <span className={styles.month}>мес</span>
 				</div>
-				<div className={styles.rating}>
-					<span className='visualyHidden'>{'Рейтинг' + (product.reviewAvg ?? product.initialRating)}</span>
+				<div 
+					className={styles.rating}
+					role="radiogroup"
+					aria-labelledby="ratingLabel"
+				>
+					<span id="ratingLabel" className='visualyHidden'>{'Рейтинг' + (product.reviewAvg ?? product.initialRating)}</span>
 					<Rating rating={product.reviewAvg ?? product.initialRating} />
 				</div>
 				<div className={styles.tags}>{categories}</div>

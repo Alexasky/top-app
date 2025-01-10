@@ -22,6 +22,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
 	return (
 		<div className={styles.wrapper}>
 			<a
+				href="#mainContent"
 				onKeyDown={skipLinkOpened}
 				onFocus={() => setIsSkiplinkDisplayed(true)}
 				tabIndex={0}
@@ -32,6 +33,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
 			<Header className={styles.header} />
 			<Sidebar className={styles.sidebar} />
 			<main
+				id="mainContent"
 				tabIndex={0}
 				ref={bodyRef}
 				className={styles.body}
